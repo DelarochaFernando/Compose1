@@ -38,6 +38,8 @@ fun MenuProcPrim(navController: NavController){
     //val navController = rememberNavController()
     val openDialog = remember { mutableStateOf(false)}
     var _idProcPrim = rememberSaveable { mutableStateOf("")}
+    var procPrimViewModel = MenuProcPrimViewModel()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,21 +72,12 @@ fun MenuProcPrim(navController: NavController){
             )
         },
         content = {
-
+            procPrimViewModel.setListaProcPrim()
             Column() {
                 Text(
                     modifier = Modifier.padding(8.dp),
                     text = "Elige el trámite que desees realizar.")
                 Spacer(modifier = Modifier.height(8.dp))
-                var listOfProcess = mutableListOf<ProcesoPrimario>()
-                listOfProcess.add(ProcesoPrimario(Icons.Filled.GroupAdd,"100","Apertura de Cuenta"))
-                listOfProcess.add(ProcesoPrimario(Icons.Filled.LocalAtm,"200","Prestamo"))
-                listOfProcess.add(ProcesoPrimario(Icons.Filled.Description,"300","Mentenimiento de Cartera"))
-                listOfProcess.add(ProcesoPrimario(Icons.Filled.Assessment,"400","Tramites Paperless"))
-                listOfProcess.add(ProcesoPrimario(Icons.Filled.HowToReg,"900","Autenticacion INE"))
-                listOfProcess.add(ProcesoPrimario(Icons.Filled.VideoCall,"800","Autenticacion Alterna"))
-                //listOfProcess.add("Comprobacion de Sobrevivencia")
-                listOfProcess.add(ProcesoPrimario(Icons.Filled.Search,"02","Consulta de Folios"))
 
                 LazyVerticalGrid(
                     contentPadding = it.apply {
@@ -94,11 +87,12 @@ fun MenuProcPrim(navController: NavController){
                             end = 12.dp,
                             bottom = 16.dp
                         ) },
-                    cells = GridCells.Fixed(2),
+                    cells = //GridCells.Adaptive(128.dp),
+                    GridCells.Fixed(2),
                     horizontalArrangement = Arrangement.Center,
                     //modifier = Modifier.padding(vertical = 8.dp)
                 ){
-                    items(listOfProcess){ process ->
+                    items(procPrimViewModel.listaProcesosPrimarios.value!!){ process ->
                         ListItem(
                             modifier = Modifier
                                 .padding(4.dp)
@@ -166,7 +160,7 @@ fun MenuProcPrim(navController: NavController){
 
 }
 
-@Preview
+//@Preview
 @Composable
 fun MenuProcPrimPreview(){
     val navController = rememberNavController()
@@ -242,7 +236,7 @@ fun procprimBox(
 }
 
 @Composable
-//@Preview
+@Preview
 fun procprimView(){
     Card(
         shape = RoundedCornerShape(CornerSize(4.dp)),

@@ -4,8 +4,12 @@ import android.service.autofill.OnClickAction
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+//import androidx.compose.foundation.layout.ColumnScopeInstance.align
+//import androidx.compose.foundation.layout.RowScopeInstance.align
 //import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -15,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.inmar.compose1.data.ProcesoPrimario
@@ -58,7 +63,13 @@ fun SubProcesos(navController: NavController, idprocprim :String?){
             subProcViewModel.setListaSubProcesos(idprocprim)
             var listOfProcess = subProcViewModel.listaSubProcesos.value
             LazyVerticalGrid(
-                //contentPadding = it.apply { PaddingValues(8.dp) },
+                contentPadding = it.apply {
+                    PaddingValues(
+                        start = 12.dp,
+                        top = 16.dp,
+                        end = 12.dp,
+                        bottom = 16.dp
+                    ) },
                 cells = GridCells.Fixed(2),
                 horizontalArrangement = Arrangement.Center,
                 //modifier = Modifier.padding(vertical = 8.dp)
@@ -73,7 +84,7 @@ fun SubProcesos(navController: NavController, idprocprim :String?){
 //                        ) {
 //                            Text(text = process.subProcText)
 //                        }
-                        subProcBox(
+                        subProcCard(
                             onClickAction = {navController.navigate("poliza/${process.idSubProc}")},
                             process = process
                         )
@@ -85,16 +96,18 @@ fun SubProcesos(navController: NavController, idprocprim :String?){
     }
 }
 
-@Composable
-fun subProcBox(onClickAction: () -> Unit, process : SubProceso){
-    Box(
-        modifier = Modifier
-            .size(100.dp)
-            .background(Purple500)
 
+@Composable
+fun subProcCard(onClickAction: () -> Unit, process : SubProceso){
+    Card(
+        shape = RoundedCornerShape(CornerSize(4.dp)),
+        modifier = Modifier
+            .wrapContentSize(Alignment.Center,true)
     ) {
         TextButton(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier
+                .background(Purple500)
+                .padding(8.dp),
             onClick = {onClickAction}) {
             Text(
                 text = process.subProcText,
