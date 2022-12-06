@@ -3,11 +3,15 @@ package com.inmar.compose1.subprocesos
 import android.service.autofill.OnClickAction
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 //import androidx.compose.foundation.layout.ColumnScopeInstance.align
 //import androidx.compose.foundation.layout.RowScopeInstance.align
 //import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -31,7 +35,7 @@ import java.util.Map
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun SubProcesos(navController: NavController, idprocprim :String?){
+fun SubProcesos(navController: NavController, idprocprim :String?, procprimText : String?){
 
     var subProcViewModel = SubProcViewModel(idprocprim!!)
 
@@ -56,44 +60,45 @@ fun SubProcesos(navController: NavController, idprocprim :String?){
                     }
                 }
             )
-        }
-    ) {
-        Column() {
-            Spacer(modifier = Modifier.height(8.dp))
-            subProcViewModel.setListaSubProcesos(idprocprim)
-            var listOfProcess = subProcViewModel.listaSubProcesos.value
-            LazyVerticalGrid(
-                contentPadding = it.apply {
-                    PaddingValues(
-                        start = 12.dp,
-                        top = 16.dp,
-                        end = 12.dp,
-                        bottom = 16.dp
-                    ) },
-                cells = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.Center,
-                //modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-                items(listOfProcess!!) { process ->
-                    ListItem(
-                        modifier = Modifier
-                            .padding(4.dp)
-                    ) {
-//                        TextButton(
-//                            onClick = { navController.navigate("poliza/{${process.idSubProc}}") }
-//                        ) {
-//                            Text(text = process.subProcText)
-//                        }
-                        subProcCard(
-                            onClickAction = {navController.navigate("poliza/${process.idSubProc}")},
-                            process = process
-                        )
+        },
+        content = {
+            Column() {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "${procprimText!!}>",Modifier.size(25.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                subProcViewModel.setListaSubProcesos(idprocprim)
+                var listOfProcess = subProcViewModel.listaSubProcesos.value
+                LazyVerticalGrid(
+                    contentPadding = it.apply {
+                        PaddingValues(
+                            start = 12.dp,
+                            top = 16.dp,
+                            end = 12.dp,
+                            bottom = 16.dp
+                        ) },
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.Center,
+                    content = {
+                        items(listOfProcess!!) { process ->
+                            ListItem(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                            ) {
+                                subProcCard(
+                                    onClickAction = {
+                                        navController.navigate("poliza/${process.idSubProc}/${process.subProcText}")
+                                    },
+                                    process = process
+                                )
+                            }
+                        }
                     }
-                }
+                    //modifier = Modifier.padding(vertical = 8.dp)
+                )
+                //showDialogExitApp(navController = navController,openDialog)
             }
-            //showDialogExitApp(navController = navController,openDialog)
         }
-    }
+    )
 }
 
 
@@ -102,13 +107,14 @@ fun subProcCard(onClickAction: () -> Unit, process : SubProceso){
     Card(
         shape = RoundedCornerShape(CornerSize(4.dp)),
         modifier = Modifier
-            .wrapContentSize(Alignment.Center,true)
+            .wrapContentSize(Alignment.Center, true)
+            .clickable(onClick = onClickAction)
     ) {
-        TextButton(
+        Row(
             modifier = Modifier
                 .background(Purple500)
-                .padding(8.dp),
-            onClick = {onClickAction}) {
+                .padding(20.dp)
+        ) {
             Text(
                 text = process.subProcText,
                 color = Color.White

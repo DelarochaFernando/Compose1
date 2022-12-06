@@ -10,6 +10,10 @@ class SubProcViewModel(idprocprim: String) : ViewModel(){
     private val _listaSubProcesos = MutableLiveData<List<SubProceso>>()
     val listaSubProcesos : LiveData<List<SubProceso>>
     get() = _listaSubProcesos
+
+    private val _textoSubProc = MutableLiveData<String>()
+    val textoSubProc : LiveData<String>
+    get() = _textoSubProc
     
     fun setListaSubProcesos(idprocprim :String) {
         var lista : MutableList<SubProceso> =
@@ -54,6 +58,17 @@ class SubProcViewModel(idprocprim: String) : ViewModel(){
             }
             
         _listaSubProcesos.value = lista
+    }
+
+    fun getSubProcText(idsubproc : String){
+
+        var listsubprocesos = _listaSubProcesos.value
+
+        listsubprocesos!!.forEach { subproceso ->
+            if(subproceso.idSubProc.equals(idsubproc)){
+                _textoSubProc.value = subproceso.subProcText
+            }
+        }
     }
     
 }

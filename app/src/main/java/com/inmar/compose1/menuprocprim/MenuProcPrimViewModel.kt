@@ -13,6 +13,10 @@ class MenuProcPrimViewModel : ViewModel() {
     val listaProcesosPrimarios : LiveData<List<ProcesoPrimario>>
     get() = _listaProcesosPrimarios
 
+    private val _textoProcPrim = MutableLiveData<String>()
+    val textoProcPrim : LiveData<String>
+    get() = _textoProcPrim
+
     fun setListaProcPrim(){
         var listOfProcess = mutableListOf<ProcesoPrimario>()
         listOfProcess.add(ProcesoPrimario(Icons.Filled.GroupAdd,"100","Apertura de Cuenta"))
@@ -25,5 +29,17 @@ class MenuProcPrimViewModel : ViewModel() {
         listOfProcess.add(ProcesoPrimario(Icons.Filled.Search,"02","Consulta de Folios"))
 
         _listaProcesosPrimarios.value = listOfProcess
+    }
+
+    fun getProcPrimText(idprocprim : String){
+
+        var listProcPrim = _listaProcesosPrimarios.value
+
+        listProcPrim!!.forEach {
+          procesoPrimario ->
+            if(procesoPrimario.idProcPrim.equals(idprocprim)){
+                _textoProcPrim.value = procesoPrimario.procPrimText
+            }
+        }
     }
 }

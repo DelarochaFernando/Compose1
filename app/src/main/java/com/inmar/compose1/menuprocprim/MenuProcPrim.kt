@@ -4,9 +4,11 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
 //import androidx.compose.foundation.layout.BoxScopeInstance.align
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+//import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -87,48 +89,27 @@ fun MenuProcPrim(navController: NavController){
                             end = 12.dp,
                             bottom = 16.dp
                         ) },
-                    cells = //GridCells.Adaptive(128.dp),
-                    GridCells.Fixed(2),
+                    columns = GridCells.Fixed(2),
                     horizontalArrangement = Arrangement.Center,
-                    //modifier = Modifier.padding(vertical = 8.dp)
-                ){
-                    items(procPrimViewModel.listaProcesosPrimarios.value!!){ process ->
-                        ListItem(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .sizeIn(minHeight = 70.dp, minWidth = 160.dp)
-//                                .clickable {
-//                                    _idProcPrim.value = process.idProcPrim
-//                                    navController.navigate("subprocesos/${_idProcPrim.value}")
-//                                }
-                        )
-                        {
-//                            IconButton(
-//                                onClick = {
-//                                    _idProcPrim.value = process.idProcPrim
-//                                    navController.navigate("subprocesos/${_idProcPrim.value}")
-//                                },
-//                            ) {
-//                                Row() {
-//                                    Icon(
-//                                        imageVector = process.icon,
-//                                        contentDescription = process.idProcPrim,
-//                                        modifier = Modifier.padding(horizontal = 8.dp)
-//                                    )
-//                                    Text(text = process.procPrimText)
-//                                }
-//                            }
-                            procprimBox(
-                                onClickAction = {
-                                    _idProcPrim.value = process.idProcPrim
-                                    navController.navigate("subprocesos/${_idProcPrim.value}")
-                                },
-                                process = process
-                            )
+                    content = {
+                        items(procPrimViewModel.listaProcesosPrimarios.value!!){process->
+                            ListItem(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .sizeIn(minHeight = 70.dp, minWidth = 160.dp)
+                            ){
+                                procprimBox(
+                                    onClickAction = {
+                                        _idProcPrim.value = process.idProcPrim
+                                        navController.navigate("subprocesos/${_idProcPrim.value}/${process.procPrimText}")
+                                    },
+                                    process = process
+                                )
+                            }
                         }
                     }
-                }
-
+                    //modifier = Modifier.padding(vertical = 8.dp)
+                )
                 showDialogExitApp(navController = navController,openDialog)
                 /*Column() {
                     listOfProcess.forEach { process ->

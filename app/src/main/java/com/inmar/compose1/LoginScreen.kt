@@ -63,7 +63,7 @@ fun LoginScreenPreview(){
 }
 
 
-@SuppressLint("SuspiciousIndentation")
+//@SuppressLint("SuspiciousIndentation")
 @Composable
 fun TextWithIcon(isPassword:Boolean, labelText:String, onTextOutput : (String) ->Unit){
 

@@ -26,17 +26,31 @@ fun NavigationHost(navController: NavController){
         }
 
         composable(
-            "subprocesos/{idprocprim}",
-            arguments = listOf(navArgument("idprocprim"){type = NavType.StringType})
+            "subprocesos/{idprocprim}/{procprimtext}",
+            arguments = listOf(
+                navArgument("idprocprim"){type = NavType.StringType},
+                navArgument("procprimtext"){type = NavType.StringType}
+            )
         ){  backStackEntry ->
-            SubProcesos(navController,backStackEntry.arguments?.getString("idprocprim"))
+            SubProcesos(
+                navController,
+                backStackEntry.arguments?.getString("idprocprim"),
+                backStackEntry.arguments?.getString("procprimtext")
+            )
         }
 
-        composable("poliza/{idsubproc}",
-            arguments = listOf(navArgument("idsubproc"){type = NavType.StringType})
+        composable("poliza/{idsubproc}/{subproctext}",
+            arguments = listOf(
+                navArgument("idsubproc"){type = NavType.StringType},
+                navArgument("subproctext"){type = NavType.StringType}
+            )
         ){
             backStackEntry ->
-            Poliza(navController,backStackEntry.arguments?.getString("idsubproc"))
+            Poliza(
+                navController,
+                backStackEntry.arguments?.getString("idsubproc"),
+                backStackEntry.arguments?.getString("subproctext")
+            )
         }
     }
 }
