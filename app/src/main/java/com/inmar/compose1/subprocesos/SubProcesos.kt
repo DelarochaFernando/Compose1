@@ -1,6 +1,6 @@
 package com.inmar.compose1.subprocesos
 
-import android.service.autofill.OnClickAction
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,14 +30,13 @@ import com.inmar.compose1.data.ProcesoPrimario
 import com.inmar.compose1.data.SubProceso
 import com.inmar.compose1.menuprocprim.showDialogExitApp
 import com.inmar.compose1.ui.theme.Purple500
-import java.util.Map
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SubProcesos(navController: NavController, idprocprim :String?, procprimText : String?){
 
-    var subProcViewModel = SubProcViewModel(idprocprim!!)
+    val subProcViewModel = SubProcViewModel(idprocprim!!)
 
     Scaffold(
         topBar = {
@@ -67,7 +66,7 @@ fun SubProcesos(navController: NavController, idprocprim :String?, procprimText 
                 Text(text = "${procprimText!!}>",Modifier.size(25.dp))
                 Spacer(modifier = Modifier.height(8.dp))
                 subProcViewModel.setListaSubProcesos(idprocprim)
-                var listOfProcess = subProcViewModel.listaSubProcesos.value
+                val listOfProcess = subProcViewModel.listaSubProcesos.value
                 LazyVerticalGrid(
                     contentPadding = it.apply {
                         PaddingValues(
@@ -84,7 +83,7 @@ fun SubProcesos(navController: NavController, idprocprim :String?, procprimText 
                                 modifier = Modifier
                                     .padding(4.dp)
                             ) {
-                                subProcCard(
+                                SubProcCard(
                                     onClickAction = {
                                         navController.navigate("poliza/${process.idSubProc}/${process.subProcText}")
                                     },
@@ -103,17 +102,17 @@ fun SubProcesos(navController: NavController, idprocprim :String?, procprimText 
 
 
 @Composable
-fun subProcCard(onClickAction: () -> Unit, process : SubProceso){
+fun SubProcCard(onClickAction: () -> Unit, process : SubProceso){
     Card(
         shape = RoundedCornerShape(CornerSize(4.dp)),
         modifier = Modifier
-            .wrapContentSize(Alignment.Center, true)
             .clickable(onClick = onClickAction)
     ) {
         Row(
             modifier = Modifier
                 .background(Purple500)
-                .padding(20.dp)
+                .fillMaxSize()
+                .padding(40.dp)
         ) {
             Text(
                 text = process.subProcText,

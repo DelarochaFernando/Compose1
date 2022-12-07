@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
-//import androidx.compose.foundation.layout.BoxScopeInstance.align
-//import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -20,10 +18,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,72 +68,73 @@ fun MenuProcPrim(navController: NavController){
                     }
                 }
             )
-        },
-        content = {
-            procPrimViewModel.setListaProcPrim()
-            Column() {
-                Text(
-                    modifier = Modifier.padding(8.dp),
-                    text = "Elige el trámite que desees realizar.")
-                Spacer(modifier = Modifier.height(8.dp))
-
-                LazyVerticalGrid(
-                    contentPadding = it.apply {
-                        PaddingValues(
-                            start = 12.dp,
-                            top = 16.dp,
-                            end = 12.dp,
-                            bottom = 16.dp
-                        ) },
-                    columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.Center,
-                    content = {
-                        items(procPrimViewModel.listaProcesosPrimarios.value!!){process->
-                            ListItem(
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .sizeIn(minHeight = 70.dp, minWidth = 160.dp)
-                            ){
-                                procprimBox(
-                                    onClickAction = {
-                                        _idProcPrim.value = process.idProcPrim
-                                        navController.navigate("subprocesos/${_idProcPrim.value}/${process.procPrimText}")
-                                    },
-                                    process = process
-                                )
-                            }
-                        }
-                    }
-                    //modifier = Modifier.padding(vertical = 8.dp)
-                )
-                showDialogExitApp(navController = navController,openDialog)
-                /*Column() {
-                    listOfProcess.forEach { process ->
-                        ListItem(
-                            icon = {
-                                Icon(imageVector = process.icon, contentDescription = process.idProcPrim)
-                            },
-                            text = { Text(text = process.procPrimText)}
-                        )
-                    }
-                }*/
-                /*Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)) {
-                    LazyColumn(
-                        Modifier.padding(innerPadding),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ){
-                        val list = (0..25).map { it.toString() }
-                        items(count = list.size){
-                            //ListItem(headlineText = { Text(text = "Producto 1")})
-                        }
-                    }
-                }*/
-            }
         }
-    )
+    ) {
+        procPrimViewModel.setListaProcPrim()
+        Column() {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = "Elige el trámite que desees realizar."
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LazyVerticalGrid(
+                contentPadding = it.apply { PaddingValues(20.dp)},
+//                    contentPadding = it.apply {
+//                        PaddingValues(
+//                            start = 12.dp,
+//                            top = 16.dp,
+//                            end = 12.dp,
+//                            bottom = 16.dp
+//                        ) },
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                content = {
+                    items(procPrimViewModel.listaProcesosPrimarios.value!!) { process ->
+                        ListItem(
+                            modifier = Modifier
+                                //.padding(20.dp)
+                                //.sizeIn(minHeight = 70.dp, minWidth = 160.dp)
+                        ) {
+                            procprimBox(
+                                onClickAction = {
+                                    _idProcPrim.value = process.idProcPrim
+                                    navController.navigate("subprocesos/${_idProcPrim.value}/${process.procPrimText}")
+                                },
+                                process = process
+                            )
+                        }
+                    }
+                }
+                //modifier = Modifier.padding(vertical = 8.dp)
+            )
+            showDialogExitApp(navController = navController, openDialog)
+            /*Column() {
+                listOfProcess.forEach { process ->
+                    ListItem(
+                        icon = {
+                            Icon(imageVector = process.icon, contentDescription = process.idProcPrim)
+                        },
+                        text = { Text(text = process.procPrimText)}
+                    )
+                }
+            }*/
+            /*Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)) {
+                LazyColumn(
+                    Modifier.padding(innerPadding),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ){
+                    val list = (0..25).map { it.toString() }
+                    items(count = list.size){
+                        //ListItem(headlineText = { Text(text = "Producto 1")})
+                    }
+                }
+            }*/
+        }
+    }
 
 }
 
@@ -190,7 +187,7 @@ fun procprimBox(
         shape = RoundedCornerShape(CornerSize(4.dp)),
         elevation = 8.dp,
         modifier = Modifier
-            .padding(8.dp)
+            //.padding(40.dp)
             .clickable (onClick = onClickAction)
     ) {
         //IconButton(
@@ -199,7 +196,8 @@ fun procprimBox(
         //) {
             Row(modifier = Modifier
                 .background(Purple500)
-                .padding(20.dp)
+                .fillMaxSize()
+                .padding(40.dp)
             ) {
                 Icon(
                     imageVector = process.icon,
