@@ -39,8 +39,9 @@ fun NavigationHost(navController: NavController){
             )
         }
 
-        composable("poliza/{idsubproc}/{subproctext}",
+        composable("poliza/{procprimtext}/{idsubproc}/{subproctext}",
             arguments = listOf(
+                navArgument("procprimtext"){type = NavType.StringType},
                 navArgument("idsubproc"){type = NavType.StringType},
                 navArgument("subproctext"){type = NavType.StringType}
             )
@@ -48,6 +49,7 @@ fun NavigationHost(navController: NavController){
             backStackEntry ->
             Poliza(
                 navController,
+                backStackEntry.arguments?.getString("procprimtext"),
                 backStackEntry.arguments?.getString("idsubproc"),
                 backStackEntry.arguments?.getString("subproctext")
             )

@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.inmar.compose1.data.ProcesoPrimario
 import com.inmar.compose1.data.SubProceso
@@ -63,8 +64,11 @@ fun SubProcesos(navController: NavController, idprocprim :String?, procprimText 
         content = {
             Column() {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "${procprimText!!}>",Modifier.size(25.dp))
-                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "${procprimText!!}>",
+                    fontSize = 30.sp,
+                    modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
                 subProcViewModel.setListaSubProcesos(idprocprim)
                 val listOfProcess = subProcViewModel.listaSubProcesos.value
                 LazyVerticalGrid(
@@ -85,7 +89,11 @@ fun SubProcesos(navController: NavController, idprocprim :String?, procprimText 
                             ) {
                                 SubProcCard(
                                     onClickAction = {
-                                        navController.navigate("poliza/${process.idSubProc}/${process.subProcText}")
+                                        navController
+                                            .navigate("poliza/${procprimText}" +
+                                                "/${process.idSubProc}" +
+                                                "/${process.subProcText}"
+                                            )
                                     },
                                     process = process
                                 )
