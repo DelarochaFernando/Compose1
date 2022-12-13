@@ -47,7 +47,8 @@ fun LoginScreen(navController: NavController){
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = { navController.navigate("menuprocprim")},
-                enabled = enableButtonEmailAndPasswordText,
+                //enabled = enableButtonEmailAndPasswordText,
+                enabled = true,
                 modifier = Modifier.padding(start = 8.dp)) {
                 Text(text = "Log in")
             }
