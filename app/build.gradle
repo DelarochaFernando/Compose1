@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'//kotlin annotation processor
 }
 
 android {
@@ -61,6 +62,10 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation 'androidx.fragment:fragment-ktx:1.5.4'
     implementation "androidx.navigation:navigation-compose:$nav_version"
+
+    //Room DataBase dependencies
+    implementation "androidx.room:room-ktx:2.4.3"
+    kapt "androidx.room:room-compiler:2.4.3"
     //implementation "androidx.navigation."
     //implementation(libs.androidx.navigation.ui.ktx)
     testImplementation 'junit:junit:4.13.2'
