@@ -18,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextRange
@@ -32,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.inmar.compose1.menuprocprim.MenuProcPrimPreview
 import com.inmar.compose1.menuprocprim.MenuProcPrimViewModel
+import com.inmar.compose1.ui.theme.Purple200
+import com.inmar.compose1.ui.theme.Purple700
 import java.time.format.TextStyle
 import kotlin.math.max
 
@@ -121,16 +124,12 @@ regimen : MutableState<String>,regimenSelected : MutableState<Boolean>
     var maxLengthNucleo = 2
     val focusManager = LocalFocusManager.current
 
-    var chipcolor = ChipDefaults.chipColors(backgroundColor = MaterialTheme.colors.onSecondary)
-
-
     Column() {
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             //verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-
             Chip(
                 onClick = {
                     regimen.value = "IMSS"
@@ -138,7 +137,6 @@ regimen : MutableState<String>,regimenSelected : MutableState<Boolean>
                     enableChipIMSS.value = true
                     enableChipISSSTE.value = !enableChipIMSS.value
                 },
-                enabled = enableChipIMSS.value,
                 leadingIcon ={
                     if(enableChipIMSS.value){
                         Icon(
@@ -148,7 +146,10 @@ regimen : MutableState<String>,regimenSelected : MutableState<Boolean>
                         )
                     }
                 },
-                colors = chipcolor,
+                colors = ChipDefaults.chipColors(
+                    backgroundColor = Purple200,
+                    contentColor = Color.White
+                ),
                 modifier = Modifier.padding(end = 8.dp)
             ) {
                 Text(text = "IMSS")
@@ -160,7 +161,6 @@ regimen : MutableState<String>,regimenSelected : MutableState<Boolean>
                     enableChipISSSTE.value = true
                     enableChipIMSS.value = !enableChipISSSTE.value
                 },
-                enabled = enableChipISSSTE.value,
                 leadingIcon = {
                     if(enableChipISSSTE.value){
                         Icon(
@@ -169,7 +169,11 @@ regimen : MutableState<String>,regimenSelected : MutableState<Boolean>
                             Modifier.size(AssistChipDefaults.IconSize)
                         )
                     }
-                }
+                },
+                colors = ChipDefaults.chipColors(
+                    backgroundColor = Purple200,
+                    contentColor = Color.White
+                )
             ) {
                 Text(text = "ISSSTE")
             }
