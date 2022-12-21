@@ -1,8 +1,10 @@
 package com.inmar.compose1.subprocesos
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.inmar.compose1.BaseViewModel
 import com.inmar.compose1.data.SubProceso
 
 class SubProcViewModel(idprocprim: String) : ViewModel(){

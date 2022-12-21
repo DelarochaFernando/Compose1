@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.inmar.compose1.LoginScreen
+import com.inmar.compose1.consultafolios.ConsultaFolios
 import com.inmar.compose1.menuprocprim.MenuProcPrim
 import com.inmar.compose1.poliza.Poliza
 import com.inmar.compose1.subprocesos.SubProcesos
@@ -37,6 +38,10 @@ fun NavigationHost(navController: NavController){
                 backStackEntry.arguments?.getString("idprocprim"),
                 backStackEntry.arguments?.getString("procprimtext")
             )
+        }
+        
+        composable("consultafolios"){
+            ConsultaFolios(navController = navController)
         }
 
         composable("poliza/{procprimtext}/{idsubproc}/{subproctext}",

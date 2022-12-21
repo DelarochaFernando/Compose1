@@ -102,7 +102,12 @@ fun MenuProcPrim(navController: NavController){
                             procprimBox(
                                 onClickAction = {
                                     _idProcPrim.value = process.idProcPrim
-                                    navController.navigate("subprocesos/${_idProcPrim.value}/${process.procPrimText}")
+                                    if(process.idProcPrim.equals("00")){
+                                        navController.navigate("consultafolios")
+                                                ///${_idProcPrim.value}/${process.procPrimText}")
+                                    }else{
+                                        navController.navigate("subprocesos/${_idProcPrim.value}/${process.procPrimText}")
+                                    }
                                 },
                                 process = process
                             )

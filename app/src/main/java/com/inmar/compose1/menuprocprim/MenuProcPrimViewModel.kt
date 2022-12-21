@@ -26,7 +26,7 @@ class MenuProcPrimViewModel : ViewModel() {
         listOfProcess.add(ProcesoPrimario(Icons.Filled.HowToReg,"900","Autenticacion INE"))
         listOfProcess.add(ProcesoPrimario(Icons.Filled.VideoCall,"800","Autenticacion Alterna"))
         //listOfProcess.add("Comprobacion de Sobrevivencia")
-        listOfProcess.add(ProcesoPrimario(Icons.Filled.Search,"02","Consulta de Folios"))
+        listOfProcess.add(ProcesoPrimario(Icons.Filled.Search,"00","Consulta de Folios"))
 
         _listaProcesosPrimarios.value = listOfProcess
     }

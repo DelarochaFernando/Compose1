@@ -1,4 +1,4 @@
-package com.inmar.compose1.database
+package com.inmar.compose1.database.consultafolios
 
 import android.net.nsd.NsdServiceInfo
 import androidx.room.ColumnInfo
@@ -22,7 +22,7 @@ data class FolioCliente(
     val fec_alt     : String,
     val fec_mod     : String,
     val obs         : String,
-    val dateMilis   : String,
+    val dateMilis   : String,//pdf
     val nss         : String,
     val id_sub_proc : String,
     val regimen     : String,
