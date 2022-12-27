@@ -16,13 +16,13 @@ import org.json.JSONObject
 
 class ConsultaFoliosViewModel(application: Application) : BaseViewModel(application) {
 
-    fun getFoliosFromServer(key :String,
-        user : String, urlString : String) : ConsultaFoliosResponse?{
+    fun getFoliosFromServer() : ConsultaFoliosResponse?{
 
         var response : String? = null
         var consultaFoliosResponse : ConsultaFoliosResponse? = null
         launch {
-            response = SimpleHttpRequest.getRequest(SimpleHttpRequest.key)
+            //response = SimpleHttpRequest.getRequest(SimpleHttpRequest.key)
+            response = SimpleHttpRequest.consultaVIgentes()
             var jsonObject = JSONObject(response)
             var estatus = jsonObject.getString("estatus")
             var mensaje = jsonObject.getString("mensaje")

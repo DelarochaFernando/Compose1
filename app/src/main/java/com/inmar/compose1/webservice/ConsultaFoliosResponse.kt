@@ -1,5 +1,8 @@
 package com.inmar.compose1.webservice
 
+
+data class ConsultaFoliosJson(val key : String, val user : String)
+
 data class ConsultaFoliosResponse(
     val estatus : String,
     val mensaje : String,
