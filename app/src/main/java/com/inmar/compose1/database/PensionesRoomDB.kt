@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.inmar.compose1.database.consultafolios.ConsultaFoliosDAO
 import com.inmar.compose1.database.consultafolios.FolioCliente
+import kotlinx.coroutines.CoroutineScope
 
 @Database(entities = arrayOf(FolioCliente::class), version = 1, exportSchema = false)
 public abstract class PensionesRoomDB : RoomDatabase(){
@@ -18,7 +19,7 @@ public abstract class PensionesRoomDB : RoomDatabase(){
         @Volatile
         private var INSTANCE: PensionesRoomDB? = null
 
-        fun getDatabase(context: Context): PensionesRoomDB {
+        fun getDatabase(context: Context,scope: CoroutineScope): PensionesRoomDB {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
             return INSTANCE ?: synchronized(this) {

@@ -1,6 +1,9 @@
 package com.inmar.compose1.consultafolios
 
 import android.app.Application
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -16,9 +19,10 @@ import org.json.JSONObject
 
 class ConsultaFoliosViewModel(application: Application) : BaseViewModel(application) {
 
+    var response  = ""
     fun getFoliosFromServer() : ConsultaFoliosResponse?{
 
-        var response : String? = null
+
         var consultaFoliosResponse : ConsultaFoliosResponse? = null
         launch {
             //response = SimpleHttpRequest.getRequest(SimpleHttpRequest.key)
@@ -29,16 +33,22 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
             var datos = jsonObject.getString("datos")
 
             var listofFolios = arrayListOf<JSONObject>()
-            JSONArray(datos).let {
-                it to listofFolios
-            }
-            for (folio in listofFolios){
-                folio.let {
-                    var jsonElement = JsonParser().parse(it.toString())
-                    var datosFol = Gson().fromJson(jsonElement,DatosFol::class.java)
-                    var consultaFoliosResponse = ConsultaFoliosResponse(estatus,mensaje,datosFol)
+
+            if(estatus.equals("0")){
+
+                JSONArray(datos).let {
+                    it to listofFolios
                 }
+                for (folio in listofFolios){
+                    folio.let {
+                        var jsonElement = JsonParser().parse(it.toString())
+                        var datosFol = Gson().fromJson(jsonElement,DatosFol::class.java)
+                        var consultaFoliosResponse = ConsultaFoliosResponse(estatus,mensaje,datosFol)
+                    }
+                }
+
             }
+
         }
 
         return consultaFoliosResponse

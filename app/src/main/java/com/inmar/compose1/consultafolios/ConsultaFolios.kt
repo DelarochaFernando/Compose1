@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.inmar.compose1.R
+import com.inmar.compose1.data.PensionesApplication
 import com.inmar.compose1.ui.theme.Purple200
 import com.inmar.compose1.ui.theme.Purple500
 
@@ -39,6 +40,9 @@ fun ConsultaFolios(navController: NavController){
     val searchInput = rememberSaveable{mutableStateOf("")}
     val showTextFieldSearch = rememberSaveable { mutableStateOf(false) }
     val showlabelBuscar = rememberSaveable { mutableStateOf(true) }
+    val consultaFoliosViewModel = rememberSaveable {
+        ConsultaFoliosViewModel(application = PensionesApplication())
+    }
 
     Scaffold(
         topBar = {
@@ -115,13 +119,16 @@ fun ConsultaFolios(navController: NavController){
         },
         content = {
             Column(modifier = Modifier.padding(it)) {
+                consultaFoliosViewModel.getFoliosFromServer()
                 Spacer(modifier = Modifier
                     .height(8.dp)
                     .padding(it))
                 LazyColumn{
                     items(15){ item->
                         ConsultaFoliositem()
-                        Spacer(modifier = Modifier.height(4.dp).background(Purple500))
+                        Spacer(modifier = Modifier
+                            .height(4.dp)
+                            .background(Purple500))
                     }
                 }
             }
