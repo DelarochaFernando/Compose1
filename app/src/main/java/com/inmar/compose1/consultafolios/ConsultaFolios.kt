@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 //import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -32,6 +34,8 @@ import com.inmar.compose1.R
 import com.inmar.compose1.data.PensionesApplication
 import com.inmar.compose1.ui.theme.Purple200
 import com.inmar.compose1.ui.theme.Purple500
+import com.inmar.compose1.consultafolios.ConsultaFoliosViewModel.State
+import com.inmar.compose1.data.Book
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,17 +122,54 @@ fun ConsultaFolios(navController: NavController){
             )
         },
         content = {
-            Column(modifier = Modifier.padding(it)) {
-                consultaFoliosViewModel.getFoliosFromServer()
-                Spacer(modifier = Modifier
-                    .height(8.dp)
-                    .padding(it))
-                LazyColumn{
-                    items(15){ item->
-                        ConsultaFoliositem()
+            val booklist = consultaFoliosViewModel.booklist.collectAsState()
+
+            when(booklist.value.state){
+                State.Loading->{
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(
+                            progress = 0.8f,
+                            color = Color.Magenta,
+                            strokeWidth = 4.dp,
+                        )
+                    }
+                }
+                State.Success->{
+                    Column(modifier = Modifier.padding(it)) {
                         Spacer(modifier = Modifier
-                            .height(4.dp)
-                            .background(Purple500))
+                            .height(8.dp)
+                            .padding(it))
+                        LazyColumn{
+//                            items(15){ item->
+//                                ConsultaFoliositem(consultaFoliosViewModel)
+//                                Spacer(modifier = Modifier
+//                                    .height(4.dp)
+//                                    .background(Purple500))
+//                            }
+                            booklist.value.categoryWithBooks.forEach{
+
+                                itemsIndexed(
+                                    items = it.bookList,
+                                    itemContent = {pos,book->
+                                        ConsultaFoliositem(book)
+                                    }
+                                )
+                            }
+
+                        }
+                    }
+                }
+                State.Failed ->{
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "Failed to load list")
                     }
                 }
             }
@@ -139,11 +180,11 @@ fun ConsultaFolios(navController: NavController){
 @Composable
 @Preview
 fun ConsultaFoliosItemPreview(){
-    ConsultaFoliositem()
+    //ConsultaFoliositem()
 }
 
 @Composable
-fun ConsultaFoliositem(){
+fun ConsultaFoliositem(book: Book){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
