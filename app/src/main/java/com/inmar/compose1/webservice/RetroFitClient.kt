@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit
 
 class RetroFitClient {
     object RetroFitClient{
+        /*
         private fun getClient() : Retrofit {
             return Retrofit.Builder()
                 .baseUrl("https://productos.winstondata.com/ws_bcr_104t/conVigenciav101.aspx")
@@ -16,13 +17,12 @@ class RetroFitClient {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }
-
         val apiService : PensionesRetroFit =
             getClient().create(PensionesRetroFit::class.java)
+        */
+        val apibooksService : APIService = getBooksRetrofitClient().create(APIService::class.java)
 
-        val apibooksService : APIService = getBooksRetrofit().create(APIService::class.java)
-
-        fun getBooksRetrofit() : Retrofit{
+        fun getBooksRetrofitClient() : Retrofit{
 
             val client = OkHttpClient.Builder()
             client.connectTimeout(2,TimeUnit.MINUTES)

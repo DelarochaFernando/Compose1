@@ -1,10 +1,13 @@
 package com.inmar.compose1.consultafolios
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 //import androidx.lifecycle.viewmodel.CreationExtras.Empty.map
 import com.google.gson.Gson
@@ -29,8 +32,14 @@ import retrofit2.awaitResponse
 class ConsultaFoliosViewModel(application: Application) : BaseViewModel(application) {
 
     var response  = ""
+
     private val _bookList = MutableStateFlow(Result(state = State.Loading,categoryWithBooks = listOf()))
     val booklist get() = _bookList
+
+    init {
+        fetchBooks()
+    }
+
  fun getFoliosFromServer() : ConsultaFoliosResponse?{
 
 
@@ -92,10 +101,15 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
                         }
                         list.sortBy { it.name }
                         _bookList.emit( Result(state = State.Success, categoryWithBooks = list))
+                    }else{
+                        _bookList.emit(Result(state = State.Failed, categoryWithBooks = listOf()))
                     }
+                }else{
+                    _bookList.emit(Result(state = State.Failed, categoryWithBooks = listOf()))
                 }
             }catch (e:Exception){
-                e.printStackTrace()
+                Log.e("FetchBooks Exception",e.message?:"",e)
+                _bookList.emit(Result(state = State.Failed, categoryWithBooks = listOf()))
             }
         }
     }
@@ -106,6 +120,17 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
         Success,
         Failed,
         Loading
+    }
+
+    class ConsultaViewModelFactory(app: Application) : ViewModelProvider.Factory{
+        val application = app
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if(modelClass.isAssignableFrom(ConsultaFoliosViewModel::class.java)){
+
+                return ConsultaFoliosViewModel(application = application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
     }
 
 }

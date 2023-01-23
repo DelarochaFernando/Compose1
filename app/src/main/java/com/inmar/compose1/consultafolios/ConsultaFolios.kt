@@ -1,5 +1,6 @@
 package com.inmar.compose1.consultafolios
 
+import android.app.Application
 import android.graphics.fonts.FontStyle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +30,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.inmar.compose1.R
 import com.inmar.compose1.data.PensionesApplication
@@ -44,9 +47,11 @@ fun ConsultaFolios(navController: NavController){
     val searchInput = rememberSaveable{mutableStateOf("")}
     val showTextFieldSearch = rememberSaveable { mutableStateOf(false) }
     val showlabelBuscar = rememberSaveable { mutableStateOf(true) }
-    val consultaFoliosViewModel = rememberSaveable {
-        ConsultaFoliosViewModel(application = PensionesApplication())
-    }
+    val consultaFoliosViewModel : ConsultaFoliosViewModel =
+        viewModel(factory = ConsultaFoliosViewModel.ConsultaViewModelFactory(app = Application()))
+//    val consultaFoliosViewModel = rememberSaveable {
+//        ConsultaFoliosViewModel(application = PensionesApplication())
+//    }
 
     Scaffold(
         topBar = {
@@ -123,7 +128,6 @@ fun ConsultaFolios(navController: NavController){
         },
         content = {
             val booklist = consultaFoliosViewModel.booklist.collectAsState()
-
             when(booklist.value.state){
                 State.Loading->{
                     Column(
@@ -151,7 +155,6 @@ fun ConsultaFolios(navController: NavController){
 //                                    .background(Purple500))
 //                            }
                             booklist.value.categoryWithBooks.forEach{
-
                                 itemsIndexed(
                                     items = it.bookList,
                                     itemContent = {pos,book->
@@ -159,7 +162,6 @@ fun ConsultaFolios(navController: NavController){
                                     }
                                 )
                             }
-
                         }
                     }
                 }

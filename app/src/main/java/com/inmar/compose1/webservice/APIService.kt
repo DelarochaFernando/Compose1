@@ -11,7 +11,7 @@ interface APIService {
     @GET
     fun getCharacterbyName(@Url url : String) : Call<DogResponse>
 
-    @Headers("Accept:Application/json")
+    @Headers("Accept: Application/json")
     @GET("assets/test.json")
-    fun fetchBookList() :Call<GetBoolListResponse>?
+    fun fetchBookList() : Call<GetBoolListResponse>?
 }

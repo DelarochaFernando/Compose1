@@ -17,7 +17,7 @@ data class Book (
     val downloadPath: String,
     @SerializedName("category_id")
     val categoryId: String,
-    @SerializedName("category_name")
+    @SerializedName("catebory_name")
     val categoryName: String
 )
 
