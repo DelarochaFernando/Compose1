@@ -1,9 +1,13 @@
 package com.inmar.compose1.consultafolios
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.graphics.fonts.FontStyle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 //import androidx.compose.foundation.layout.RowScopeInstance.weight
@@ -18,11 +22,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import com.inmar.compose1.R
 import com.inmar.compose1.data.PensionesApplication
 import com.inmar.compose1.ui.theme.Purple200
@@ -183,6 +193,89 @@ fun ConsultaFolios(navController: NavController){
 @Preview
 fun ConsultaFoliosItemPreview(){
     //ConsultaFoliositem()
+}
+
+@Composable
+fun BookListItem(book : Book){
+    Card(
+        elevation = 4.dp,
+        content = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp), content = {
+                    val bitmap = remember { mutableStateOf(BitmapFactory.decodeFile(book.img)) }
+                    val context = LocalContext.current
+                    Glide.with(context)
+                        .asBitmap()
+                        .load(book.thumbNail)
+                        .into(object : CustomTarget() {
+                            fun onLoadCleared(placeholder: Drawable?) {}
+                            fun onResourceReady(
+                                resource: Bitmap,
+                                transition: com.bumptech.glide.request.transition.Transition?
+                            ) {
+                                bitmap.value = resource
+                            }
+                        })
+                    val value = bitmap.value
+                    if (value != null)
+                        Image(
+                            bitmap = value.asImageBitmap(),
+                            contentDescription = "image",
+                            Modifier
+                                .width(80.dp)
+                                .height(100.dp)
+                        )
+                    else
+                        Box(
+                            content = {
+                                Text(
+                                    text = "Loading",
+                                    fontSize = 16.sp,
+                                )
+                            }, modifier = Modifier
+                                .width(80.dp)
+                                .height(100.dp)
+                                .border(
+                                    width = 1.2.dp,
+                                    color = Color.White,
+                                    shape = RectangleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        )
+
+                    Spacer(modifier = Modifier.size(16.dp))
+                    Column(
+                        modifier = Modifier.weight(2F),
+                        content = {
+                            Text(
+                                text = book.title,
+                                fontSize = 20.sp,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Price: $${book.price}",
+                                fontSize = 16.sp,
+                                maxLines = 1,
+                                color = Color.LightGray,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = "Author: ${book.author}",
+                                color = Color.Gray,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        })
+                })
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+    )
 }
 
 @Composable
