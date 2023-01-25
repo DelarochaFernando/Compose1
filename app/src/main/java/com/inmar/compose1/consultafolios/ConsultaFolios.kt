@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.graphics.fonts.FontStyle
+import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,13 +43,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.CustomViewTarget
 import com.inmar.compose1.R
 import com.inmar.compose1.data.PensionesApplication
 import com.inmar.compose1.ui.theme.Purple200
 import com.inmar.compose1.ui.theme.Purple500
 import com.inmar.compose1.consultafolios.ConsultaFoliosViewModel.State
 import com.inmar.compose1.data.Book
+import org.jetbrains.annotations.Contract
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -168,7 +172,8 @@ fun ConsultaFolios(navController: NavController){
                                 itemsIndexed(
                                     items = it.bookList,
                                     itemContent = {pos,book->
-                                        ConsultaFoliositem(book)
+                                        //ConsultaFoliositem(book)
+                                        BookListItem(book = book)
                                     }
                                 )
                             }
@@ -195,6 +200,7 @@ fun ConsultaFoliosItemPreview(){
     //ConsultaFoliositem()
 }
 
+//@Contract(pure = true)
 @Composable
 fun BookListItem(book : Book){
     Card(
@@ -205,19 +211,22 @@ fun BookListItem(book : Book){
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 16.dp), content = {
                     val bitmap = remember { mutableStateOf(BitmapFactory.decodeFile(book.img)) }
+                    //val bitmap = remember {mutableStateOf(null)}
                     val context = LocalContext.current
                     Glide.with(context)
                         .asBitmap()
                         .load(book.thumbNail)
-                        .into(object : CustomTarget() {
-                            fun onLoadCleared(placeholder: Drawable?) {}
-                            fun onResourceReady(
-                                resource: Bitmap,
-                                transition: com.bumptech.glide.request.transition.Transition?
-                            ) {
-                                bitmap.value = resource
+                        .into(
+                            object : CustomTarget<Bitmap>() {
+                                override fun onLoadCleared(placeholder: Drawable?) {}
+                                 override fun onResourceReady(
+                                    resource: Bitmap,
+                                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                                ) {
+                                    bitmap.value = resource
+                                }
                             }
-                        })
+                        )
                     val value = bitmap.value
                     if (value != null)
                         Image(

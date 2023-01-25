@@ -80,6 +80,10 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
     }
 
     //https://rrtutors.com/tutorials/How-to-Integrate-REST-API-with-Jetpack-compose-in-Android
+
+    //how to use POST request Retrofit2
+    //https://code.tutsplus.com/es/tutorials/sending-data-with-retrofit-2-http-client-for-android--cms-27845
+
     private fun fetchBooks(){
         launch {
             try{
