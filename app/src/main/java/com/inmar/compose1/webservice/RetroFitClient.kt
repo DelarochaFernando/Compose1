@@ -9,17 +9,18 @@ import java.util.concurrent.TimeUnit
 
 class RetroFitClient {
     object RetroFitClient{
-        /*
-        private fun getClient() : Retrofit {
+
+        private fun getPensionesClient() : Retrofit {
             return Retrofit.Builder()
-                .baseUrl("https://productos.winstondata.com/ws_bcr_104t/conVigenciav101.aspx")
+                .baseUrl("https://productos.winstondata.com/ws_bcr_104t/")
                 .client(OkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }
+
         val apiService : PensionesRetroFit =
-            getClient().create(PensionesRetroFit::class.java)
-        */
+            getPensionesClient().create(PensionesRetroFit::class.java)
+
         val apibooksService : APIService = getBooksRetrofitClient().create(APIService::class.java)
 
         fun getBooksRetrofitClient() : Retrofit{

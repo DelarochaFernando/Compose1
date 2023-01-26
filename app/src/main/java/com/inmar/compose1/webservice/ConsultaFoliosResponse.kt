@@ -6,7 +6,7 @@ data class ConsultaFoliosJson(val key : String, val user : String)
 data class ConsultaFoliosResponse(
     val estatus : String,
     val mensaje : String,
-    val datos : DatosFol
+    val datos : MutableList<DatosFol>
 )
 
 data class DatosFol(

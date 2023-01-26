@@ -131,7 +131,17 @@ fun ConsultaFolios(navController: NavController){
                         )
                     }
                     IconButton(
-                        onClick = {/*refresh the data showed in the list*/}) {
+                        onClick = {
+                            consultaFoliosViewModel
+                                .booklist
+                                .tryEmit(
+                                    ConsultaFoliosViewModel.Result.ResultBooks(
+                                        state = State.Loading,
+                                        categoryWithBooks = listOf()
+                                    )
+                                )
+                            consultaFoliosViewModel.fetchBooks()
+                        }) {
                         Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = "Refresh the list items"

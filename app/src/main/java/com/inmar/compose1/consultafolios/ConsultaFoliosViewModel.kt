@@ -33,18 +33,40 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
 
     var response  = ""
 
-    private val _bookList = MutableStateFlow(Result(state = State.Loading,categoryWithBooks = listOf()))
+    private val _bookList = MutableStateFlow(Result.ResultBooks(state = State.Loading,categoryWithBooks = listOf()))
     val booklist get() = _bookList
+
+    private val _foliosList = MutableStateFlow(Result.ResultFolios(state =State.Loading, listaFolios = listOf()))
+    val foliosList get() = _foliosList
 
     init {
         fetchBooks()
     }
 
- fun getFoliosFromServer() : ConsultaFoliosResponse?{
+ fun getFoliosFromServer(key :String, user : String){
+
+     try {
+         var consultaFoliosResponse : ConsultaFoliosResponse? = null
+         launch {
+             val call = RetroFitClient.RetroFitClient.apiService.getConsultaVigentes(key,user)
+             val response = call?.awaitResponse()
+             if(response?.isSuccessful == true){
+                 val getResponse = response?.body()
+                 if(getResponse?.estatus.equals("0")){
+                    val list = mutableListOf<DatosFol>()
+                     //list.add(getResponse.datos)
+                 }
+             }
+         }
+
+     }catch (ex : Exception){
+         ex.printStackTrace()
+     }
 
 
-        var consultaFoliosResponse : ConsultaFoliosResponse? = null
-        viewModelScope.launch {
+
+
+     /*launch {
             //response = SimpleHttpRequest.getRequest(SimpleHttpRequest.key)
             response = SimpleHttpRequest.consultaVIgentes().toString()
             var jsonObject = JSONObject(response)
@@ -69,9 +91,7 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
 
             }
 
-        }
-
-        return consultaFoliosResponse
+        }*/
 
     }
 
@@ -84,7 +104,7 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
     //how to use POST request Retrofit2
     //https://code.tutsplus.com/es/tutorials/sending-data-with-retrofit-2-http-client-for-android--cms-27845
 
-    private fun fetchBooks(){
+    public fun fetchBooks(){
         launch {
             try{
                 val call = RetroFitClient.RetroFitClient.apibooksService.fetchBookList()
@@ -104,21 +124,24 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
                             list.add(CategoryWithBooks(map.key,map.value,books))
                         }
                         list.sortBy { it.name }
-                        _bookList.emit( Result(state = State.Success, categoryWithBooks = list))
+                        _bookList.emit( Result.ResultBooks(state = State.Success, categoryWithBooks = list))
                     }else{
-                        _bookList.emit(Result(state = State.Failed, categoryWithBooks = listOf()))
+                        _bookList.emit(Result.ResultBooks(state = State.Failed, categoryWithBooks = listOf()))
                     }
                 }else{
-                    _bookList.emit(Result(state = State.Failed, categoryWithBooks = listOf()))
+                    _bookList.emit(Result.ResultBooks(state = State.Failed, categoryWithBooks = listOf()))
                 }
             }catch (e:Exception){
                 Log.e("FetchBooks Exception",e.message?:"",e)
-                _bookList.emit(Result(state = State.Failed, categoryWithBooks = listOf()))
+                _bookList.emit(Result.ResultBooks(state = State.Failed, categoryWithBooks = listOf()))
             }
         }
     }
 
-    data class Result(val state: State, val categoryWithBooks: List<CategoryWithBooks>)
+    sealed class Result{
+        class ResultBooks(val state: State, val categoryWithBooks: List<CategoryWithBooks>) : Result()
+        class ResultFolios(val state : State,val listaFolios : List<DatosFol>) : Result()
+    }
 
     enum class State {
         Success,
