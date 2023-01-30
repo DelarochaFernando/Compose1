@@ -3,6 +3,9 @@ package com.inmar.compose1.webservice
 
 data class ConsultaFoliosJson(val key : String, val user : String)
 
+val key = "50d0n27hb54ZMaqiSVpqO2Rn60d6m90ks05EhaZDnJfufNjyRF"
+val user = "TI_APP"
+
 data class ConsultaFoliosResponse(
     val estatus : String,
     val mensaje : String,

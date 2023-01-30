@@ -17,14 +17,15 @@ import com.google.gson.JsonParser
 import com.inmar.compose1.BaseViewModel
 import com.inmar.compose1.data.Book
 import com.inmar.compose1.data.CategoryWithBooks
-import com.inmar.compose1.webservice.ConsultaFoliosResponse
-import com.inmar.compose1.webservice.DatosFol
-import com.inmar.compose1.webservice.RetroFitClient
-import com.inmar.compose1.webservice.SimpleHttpRequest
+import com.inmar.compose1.webservice.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
+import org.apache.http.entity.mime.HttpMultipartMode
+import org.apache.http.entity.mime.MultipartEntity
+import org.apache.http.entity.mime.content.ByteArrayBody
+import org.apache.http.entity.mime.content.StringBody
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.awaitResponse
@@ -41,58 +42,78 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
 
     init {
         fetchBooks()
+        getFoliosFromServer(key = key,user = user)
     }
 
- fun getFoliosFromServer(key :String, user : String){
+    fun getFoliosFromServer(key :String, user : String) {
+        try {
+            var consultaFoliosResponse: ConsultaFoliosResponse? = null
+            launch {
+                val json = ConsultaFoliosJson(key, user)
+                val jsonString = "[${Gson().toJson(json)}]"
+                val byteArray = jsonString.toByteArray()
+//                val reqEntity = MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
+//                val byteArrayBody = ByteArrayBody(byteArray,"forest.jpg")
+//                reqEntity.addPart("uploaded",byteArrayBody)
+//                reqEntity.addPart("photoCaption", StringBody("asasadgs"))
 
-     try {
-         var consultaFoliosResponse : ConsultaFoliosResponse? = null
-         launch {
-             val call = RetroFitClient.RetroFitClient.apiService.getConsultaVigentes(key,user)
-             val response = call?.awaitResponse()
-             if(response?.isSuccessful == true){
-                 val getResponse = response?.body()
-                 if(getResponse?.estatus.equals("0")){
-                    val list = mutableListOf<DatosFol>()
-                     //list.add(getResponse.datos)
-                 }
-             }
-         }
+                val call = RetroFitClient
+                    .RetroFitClient
+                    .apiService
+                    .getConsultaVigentes(byteArray,"photoCaption")
 
-     }catch (ex : Exception){
-         ex.printStackTrace()
-     }
-
-
-
-
-     /*launch {
-            //response = SimpleHttpRequest.getRequest(SimpleHttpRequest.key)
-            response = SimpleHttpRequest.consultaVIgentes().toString()
-            var jsonObject = JSONObject(response)
-            var estatus = jsonObject.getString("estatus")
-            var mensaje = jsonObject.getString("mensaje")
-            var datos = jsonObject.getString("datos")
-
-            var listofFolios = arrayListOf<JSONObject>()
-
-            if(estatus.equals("0")){
-
-                JSONArray(datos).let {
-                    it to listofFolios
-                }
-                for (folio in listofFolios){
-                    folio.let {
-                        var jsonElement = JsonParser().parse(it.toString())
-                        var datosFol = Gson().fromJson(jsonElement,DatosFol::class.java)
-                        var consultaFoliosResponse = ConsultaFoliosResponse(estatus,mensaje,datosFol)
+                val response = call?.awaitResponse()
+                if (response?.isSuccessful == true) {
+                    val getResponse = response?.body()
+                    if (getResponse?.estatus.equals("0")) {
+                        val listaDeFolios = mutableListOf<DatosFol>()
+                        getResponse?.datos?.forEach {
+                            listaDeFolios.add(it)
+                        }
+                        _foliosList.emit(
+                            Result.ResultFolios(state = State.Success, listaFolios = listaDeFolios)
+                        )
+                    } else if (getResponse?.estatus.equals("1")) {
+                        _foliosList.emit(
+                            Result.ResultFolios(state = State.Failed, listaFolios = listOf())
+                        )
                     }
+                } else {
+                    _foliosList.emit(
+                        Result.ResultFolios(state = State.Failed, listaFolios = listOf())
+                    )
                 }
-
             }
 
-        }*/
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+        /*launch {
+               //response = SimpleHttpRequest.getRequest(SimpleHttpRequest.key)
+               response = SimpleHttpRequest.consultaVIgentes().toString()
+               var jsonObject = JSONObject(response)
+               var estatus = jsonObject.getString("estatus")
+               var mensaje = jsonObject.getString("mensaje")
+               var datos = jsonObject.getString("datos")
 
+               var listofFolios = arrayListOf<JSONObject>()
+
+               if(estatus.equals("0")){
+
+                   JSONArray(datos).let {
+                       it to listofFolios
+                   }
+                   for (folio in listofFolios){
+                       folio.let {
+                           var jsonElement = JsonParser().parse(it.toString())
+                           var datosFol = Gson().fromJson(jsonElement,DatosFol::class.java)
+                           var consultaFoliosResponse = ConsultaFoliosResponse(estatus,mensaje,datosFol)
+                       }
+                   }
+
+               }
+
+           }*/
     }
 
     fun searchByName(query : String){

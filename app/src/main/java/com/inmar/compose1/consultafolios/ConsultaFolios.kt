@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 //import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -52,6 +53,7 @@ import com.inmar.compose1.ui.theme.Purple200
 import com.inmar.compose1.ui.theme.Purple500
 import com.inmar.compose1.consultafolios.ConsultaFoliosViewModel.State
 import com.inmar.compose1.data.Book
+import com.inmar.compose1.webservice.DatosFol
 import org.jetbrains.annotations.Contract
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -151,8 +153,11 @@ fun ConsultaFolios(navController: NavController){
             )
         },
         content = {
+
             val booklist = consultaFoliosViewModel.booklist.collectAsState()
-            when(booklist.value.state){
+            val folioslist = consultaFoliosViewModel.foliosList.collectAsState()
+
+            when(folioslist.value.state){
                 State.Loading->{
                     Column(
                         modifier = Modifier.fillMaxSize(),
@@ -178,15 +183,24 @@ fun ConsultaFolios(navController: NavController){
 //                                    .height(4.dp)
 //                                    .background(Purple500))
 //                            }
-                            booklist.value.categoryWithBooks.forEach{
+
+                            folioslist.value.listaFolios.forEach {
                                 itemsIndexed(
-                                    items = it.bookList,
-                                    itemContent = {pos,book->
-                                        //ConsultaFoliositem(book)
-                                        BookListItem(book = book)
+                                    items = folioslist.value.listaFolios,
+                                    itemContent = {pos, fol ->
+                                        ConsultaFoliositem(folio = fol)
                                     }
                                 )
                             }
+//                            booklist.value.categoryWithBooks.forEach{
+//                                itemsIndexed(
+//                                    items = it.bookList,
+//                                    itemContent = {pos,book->
+//                                        //ConsultaFoliositem(book)
+//                                        BookListItem(book = book)
+//                                    }
+//                                )
+//                            }
                         }
                     }
                 }
@@ -298,26 +312,26 @@ fun BookListItem(book : Book){
 }
 
 @Composable
-fun ConsultaFoliositem(book: Book){
+fun ConsultaFoliositem(folio: DatosFol){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = {})
     ){
-        CircularShapeWithLetterInside(textInside = "F",
+        CircularShapeWithLetterInside(textInside = "${folio.nombre?.get(0).toString()}",
             modifier = Modifier.weight(1f,true))
         Column(modifier = Modifier
                 .weight(1f,true)
             //.padding(end = 12.dp)
         ) {
-            Text(text = "Folio : 00000026939",fontSize = 20.sp, color = Purple500)
-            Text(text= "PRESTAMO" ,color= Color.Black, fontWeight = FontWeight.Bold)
-            Text(text = "RENOVACION DE PRESTAMO PGB",color= Color.Black,fontWeight = FontWeight.Bold)
-            Text(text = "Póliza: 001254")
-            Text(text = "Núcleo: 01")
-            Text(text = "IMSS")
-            Text(text = "MANUELA SERRANO SERRANO")
+            Text(text = "Folio : ${folio.folio}",fontSize = 20.sp, color = Purple500)
+            Text(text= "${folio.proc_prim}" ,color= Color.Black, fontWeight = FontWeight.Bold)
+            Text(text = "${folio.sub_proc}",color= Color.Black,fontWeight = FontWeight.Bold)
+            Text(text = "Póliza: ${folio.poliza}")
+            Text(text = "Núcleo: ${folio.nucleo}")
+            Text(text = "${folio.regimen}")
+            Text(text = "${folio.nombre}")
         }
         Column(modifier = Modifier
             .weight(1f,true)
