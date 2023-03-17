@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
+import okio.internal.commonAsUtf8ToByteArray
+import org.apache.http.entity.ContentType
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.ByteArrayBody
@@ -51,16 +53,20 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
             launch {
                 val json = ConsultaFoliosJson(key, user)
                 val jsonString = "[${Gson().toJson(json)}]"
-                val byteArray = jsonString.toByteArray()
-//                val reqEntity = MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
-//                val byteArrayBody = ByteArrayBody(byteArray,"forest.jpg")
-//                reqEntity.addPart("uploaded",byteArrayBody)
-//                reqEntity.addPart("photoCaption", StringBody("asasadgs"))
+                Log.i("getFoliosFromServer - jsonString: ",jsonString)
+                val byteArray = jsonString.encodeToByteArray()
+                val reqEntity = MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
+                val byteArrayBody = ByteArrayBody(byteArray,"forest.jpg")
+                val photoCaptionBody = StringBody("photocaption", ContentType.APPLICATION_JSON)
+                reqEntity.addPart("uploaded",byteArrayBody)
+                reqEntity.addPart("photoCaption", StringBody("asasadgs"))
 
                 val call = RetroFitClient
                     .RetroFitClient
                     .apiService
-                    .getConsultaVigentes(byteArray,"photoCaption")
+                    //.getConsultaVigentes(reqEntity)
+                    .getConsultaVigentes(bab = byteArrayBody, stringBody = photoCaptionBody)
+                    //.getConsultaVigentes(byteArray,photoCaptionBody)
 
                 val response = call?.awaitResponse()
                 if (response?.isSuccessful == true) {
@@ -74,6 +80,10 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
                             Result.ResultFolios(state = State.Success, listaFolios = listaDeFolios)
                         )
                     } else if (getResponse?.estatus.equals("1")) {
+                        _foliosList.emit(
+                            Result.ResultFolios(state = State.Failed, listaFolios = listOf())
+                        )
+                    }else{
                         _foliosList.emit(
                             Result.ResultFolios(state = State.Failed, listaFolios = listOf())
                         )

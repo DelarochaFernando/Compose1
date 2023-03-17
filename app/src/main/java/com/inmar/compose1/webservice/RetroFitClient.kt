@@ -2,6 +2,7 @@ package com.inmar.compose1.webservice
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
@@ -11,10 +12,20 @@ class RetroFitClient {
     object RetroFitClient{
 
         private fun getPensionesClient() : Retrofit {
+
+            val gson = GsonBuilder()
+                .serializeNulls()
+                .setLenient()
+                .create()
+            val okHttpClient = OkHttpClient.Builder()
+            val httpInterpector = HttpLoggingInterceptor()
+            httpInterpector.level = HttpLoggingInterceptor.Level.BODY
+            okHttpClient.interceptors().add(httpInterpector)
+
             return Retrofit.Builder()
                 .baseUrl("https://productos.winstondata.com/ws_bcr_104t/")
-                .client(OkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient.build())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
         }
 
