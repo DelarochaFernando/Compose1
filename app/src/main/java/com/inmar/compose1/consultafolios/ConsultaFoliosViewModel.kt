@@ -21,6 +21,9 @@ import com.inmar.compose1.webservice.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import okhttp3.internal.wait
 import okio.internal.commonAsUtf8ToByteArray
 import org.apache.http.entity.ContentType
@@ -61,12 +64,20 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
                 reqEntity.addPart("uploaded",byteArrayBody)
                 reqEntity.addPart("photoCaption", StringBody("asasadgs"))
 
+                val _requestBody = RequestBody.create(
+                    "application/json".toMediaTypeOrNull(),
+                    "{\"key\":\"50d0n27hb54ZMaqiSVpqO2Rn60d6m90ks05EhaZDnJfufNjyRF\"," +
+                            "\"usuario\":\"TI_APP\"}"
+                )
+
+
                 val call = RetroFitClient
                     .RetroFitClient
                     .apiService
                     //.getConsultaVigentes(reqEntity)
-                    .getConsultaVigentes(bab = byteArrayBody, stringBody = photoCaptionBody)
+                    //.getConsultaVigentes(bab = byteArrayBody, stringBody = photoCaptionBody)
                     //.getConsultaVigentes(byteArray,photoCaptionBody)
+                    .getConsultaVigentes(requestBody = _requestBody)
 
                 val response = call?.awaitResponse()
                 if (response?.isSuccessful == true) {
@@ -83,7 +94,11 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
                         _foliosList.emit(
                             Result.ResultFolios(state = State.Failed, listaFolios = listOf())
                         )
-                    }else{
+                    }else if (getResponse?.estatus.equals("101")){
+                        _foliosList.emit(
+                            Result.ResultFolios(state = State.Failed, listaFolios = listOf())
+                        )
+                    } else{
                         _foliosList.emit(
                             Result.ResultFolios(state = State.Failed, listaFolios = listOf())
                         )
