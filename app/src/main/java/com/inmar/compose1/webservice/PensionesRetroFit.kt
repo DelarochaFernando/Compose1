@@ -24,8 +24,9 @@ interface PensionesRetroFit {
 //    ) : Call<ConsultaFoliosResponse>
 
     @Headers("Accept: Application/json")
+    @Multipart
     @POST("convigenciav101.aspx")
     fun getConsultaVigentes(
-        @Body requestBody: RequestBody
+        @Part("bytearray") requestBody: RequestBody
     ) : Call<ConsultaFoliosResponse>
 }

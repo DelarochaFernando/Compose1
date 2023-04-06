@@ -21,19 +21,29 @@ import com.inmar.compose1.webservice.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.parse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.internal.wait
 import okio.internal.commonAsUtf8ToByteArray
+import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.ContentType
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.ByteArrayBody
 import org.apache.http.entity.mime.content.StringBody
+import org.apache.http.impl.client.DefaultHttpClient
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.awaitResponse
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
+import kotlin.coroutines.CoroutineContext
 
 class ConsultaFoliosViewModel(application: Application) : BaseViewModel(application) {
 
@@ -48,16 +58,56 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
     init {
         fetchBooks()
         getFoliosFromServer(key = key,user = user)
+        //getFoliosFromServerApache(key = key, user = user)
+    }
+
+
+    fun getFoliosFromServerApache(key: String, user: String){
+        try {
+            launch {
+                val httpClient = DefaultHttpClient()
+                val httpPostRequest = HttpPost(urlAPIPensiones)
+                val json = ConsultaFoliosJson(key, user)
+                val jsonString = "[${Gson().toJson(json)}]"
+                val byteArray = jsonString.encodeToByteArray()
+                Log.i("getFoliosFromServer - jsonString: ",jsonString)
+                val reqEntity = MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
+                val byteArrayBody = ByteArrayBody(byteArray,"forest.jpg")
+                val photoCaptionBody = StringBody("photocaption", ContentType.APPLICATION_JSON)
+                reqEntity.addPart("uploaded",byteArrayBody)
+                reqEntity.addPart("photoCaption", StringBody("asasadgs"))
+                httpPostRequest.entity = reqEntity
+
+
+                    val response = httpClient.execute(httpPostRequest)
+
+
+                val inputStream = response.entity.content
+                val inputStreamReader = InputStreamReader(inputStream,"utf-8")
+                val reader = BufferedReader(inputStreamReader)
+
+                var sResponse = StringBuilder()
+                while (reader.readLine()!= readlnOrNull()){
+                    sResponse = sResponse.append(reader.readLine())
+                }
+
+                Log.i("getFoliosFromServerApache :", sResponse.toString())
+            }
+
+        }catch ( ex : Exception){
+            ex.printStackTrace()
+        }
     }
 
     fun getFoliosFromServer(key :String, user : String) {
         try {
-            var consultaFoliosResponse: ConsultaFoliosResponse? = null
+
             launch {
                 val json = ConsultaFoliosJson(key, user)
                 val jsonString = "[${Gson().toJson(json)}]"
                 Log.i("getFoliosFromServer - jsonString: ",jsonString)
                 val byteArray = jsonString.encodeToByteArray()
+                Log.i("getFoliosFromServer - jsonString: ",jsonString)
                 val reqEntity = MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
                 val byteArrayBody = ByteArrayBody(byteArray,"forest.jpg")
                 val photoCaptionBody = StringBody("photocaption", ContentType.APPLICATION_JSON)
@@ -69,8 +119,6 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
                     "{\"key\":\"50d0n27hb54ZMaqiSVpqO2Rn60d6m90ks05EhaZDnJfufNjyRF\"," +
                             "\"usuario\":\"TI_APP\"}"
                 )
-
-
                 val call = RetroFitClient
                     .RetroFitClient
                     .apiService
@@ -80,6 +128,7 @@ class ConsultaFoliosViewModel(application: Application) : BaseViewModel(applicat
                     .getConsultaVigentes(requestBody = _requestBody)
 
                 val response = call?.awaitResponse()
+
                 if (response?.isSuccessful == true) {
                     val getResponse = response?.body()
                     if (getResponse?.estatus.equals("0")) {

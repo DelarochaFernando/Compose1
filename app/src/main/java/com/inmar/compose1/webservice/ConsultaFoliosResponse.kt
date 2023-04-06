@@ -5,6 +5,7 @@ data class ConsultaFoliosJson(val key : String, val user : String)
 
 val key = "50d0n27hb54ZMaqiSVpqO2Rn60d6m90ks05EhaZDnJfufNjyRF"
 val user = "TI_APP"
+val urlAPIPensiones = "https://productos.winstondata.com/ws_bcr_104t/"
 
 data class ConsultaFoliosResponse(
     val estatus : String,
